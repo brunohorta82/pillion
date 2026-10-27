@@ -57,10 +57,13 @@ Some Tracer 9 GT dashes (2026) also accept Motorize over the bike's own Wi-Fi ho
 use SDL's **TCP transport** for this (Settings → *Wi-Fi link*), with the same Garmin identity:
 
 - The phone joins the bike's hotspot in Android settings ("keep connected without internet").
-- *Scan bike Wi-Fi* reads the hotspot's gateway (IPv4 default route, else the DHCP server), sends
-  mDNS (`_sdl._tcp`, `_garmin._tcp`, …) and SSDP probes, then sweeps the gateway's TCP ports. It
-  picks `12345` (SDL Core's default) if open, else the first plausible open port, and logs
-  everything for the diagnostics zip.
+- By default the target is the hotspot's gateway (IPv4 default route, else the DHCP server) on
+  SDL Core's default port `12345`. **Verified on a Tracer 9 GT (2026):** the dash is the gateway
+  `192.168.0.1` on a 5 GHz hotspot, listens on `12345`, accepts the Motorize registration in under
+  a second and, once activated (HMI FULL), asks for **640×360 H.264 (RAW), max 512 kbit/s**.
+- *Scan bike Wi-Fi* is optional, for dashes that listen elsewhere: it sends mDNS (`_sdl._tcp`,
+  `_garmin._tcp`, …) and SSDP probes, then sweeps the gateway's TCP ports, picks `12345` if open,
+  else the first plausible open port, and logs everything for the diagnostics zip.
 - On Start the SDL service gets `TCPTransportConfig(port, host)` and the app calls
   `ConnectivityManager.bindProcessToNetwork(wifi)` — the hotspot has no internet, so without it
   Android routes the socket over mobile data and the dash is unreachable. Stopping unbinds.
@@ -68,8 +71,9 @@ use SDL's **TCP transport** for this (Settings → *Wi-Fi link*), with the same 
   dials the phone itself) and the session falls back to USB.
 
 When the cable path fails, the diagnostics zip shows why: `USB_STATE` without `accessory=true` means
-the dash never switched the phone into AOA mode (charge-only cable/port), and a second installed SDL
-router (e.g. the official app) can claim the link first.
+the dash never switched the phone into AOA mode, and a second installed SDL router (e.g. the official
+app) can claim the link first. On the same 2026 Tracer 9 GT the cable never reached AOA, in
+charge-only or MTP mode, so on that bike Wi-Fi is the working path.
 
 ## iOS — mirror the Motorize iPA (SDL 6.3.1)
 

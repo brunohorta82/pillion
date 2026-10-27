@@ -230,8 +230,8 @@ internal fun SettingsScreen(
                 }
             }
             Text(
-                "Join the bike's Wi-Fi in Android settings first (keep it connected even without internet), " +
-                    "then scan. The scan can take a few minutes.",
+                "Join the bike's Wi-Fi in Android settings first (keep it connected even without internet). " +
+                    "The dash is found automatically; scan only if it doesn't connect (takes a few minutes).",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(start = 6.dp, top = 8.dp, end = 6.dp),

@@ -9,9 +9,10 @@ All notable changes to Pillion are documented here. The format follows
 ### Added
 - **SDL over Wi-Fi (experimental, Android).** Settings → *Wi-Fi link* lets the Motorize-compatible
   profile connect to the dash over the bike's Wi-Fi hotspot (SDL TCP transport) instead of the USB
-  cable. *Scan bike Wi-Fi* finds the dash's gateway and SDL port and logs what it saw (mDNS/SSDP,
-  open ports); the process is bound to the hotspot so traffic doesn't leak to mobile data. Reported
-  working on a Tracer 9 GT (2026).
+  cable. It targets the hotspot's gateway on SDL's default port 12345 (verified on a Tracer 9 GT
+  (2026): registers, reaches HMI FULL and streams 640×360 H.264); the process is bound to the hotspot
+  so traffic doesn't leak to mobile data. An optional *Scan bike Wi-Fi* probes mDNS/SSDP and open
+  ports for dashes that listen elsewhere.
 - **Shareable diagnostic logs (Android).** Settings → *Share diagnostic logs* zips a rolling capture of
   the app + SDL router logcat with a summary (USB/AOA state, accessories, installed SDL routers,
   networks, Wi-Fi Direct) so testers without adb can send a full report.
