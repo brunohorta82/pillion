@@ -18,6 +18,7 @@ import app.pillion.core.SettingsStore
 import app.pillion.core.ThemeMode
 import app.pillion.core.UpdateChecker
 import app.pillion.core.UpdateInfo
+import app.pillion.core.WifiLink
 import app.pillion.core.headunit.HeadUnitProfile
 import app.pillion.core.headunit.HeadUnitRegistry
 
@@ -35,6 +36,8 @@ fun App(
     updateChecker: UpdateChecker? = null,
     settingsStore: SettingsStore? = null,
     dashSetup: DashSetup? = null,
+    onShareLogs: (() -> Unit)? = null,
+    wifiLink: WifiLink? = null,
 ) {
     var themeMode by remember { mutableStateOf(settingsStore?.themeMode() ?: ThemeMode.SYSTEM) }
     PillionTheme(themeMode) {
@@ -64,6 +67,8 @@ fun App(
         var update by remember { mutableStateOf<UpdateInfo?>(null) }
         var updateDismissed by rememberSaveable { mutableStateOf(false) }
         val uriHandler = LocalUriHandler.current
+        val wifiEnabled = wifiLink?.enabled?.collectAsState()?.value ?: false
+        val wifiStatus = wifiLink?.status?.collectAsState()?.value
 
         LaunchedEffect(updateChecker) { update = updateChecker?.newerThan(AppInfo.VERSION) }
         BackHandler(enabled = showSettings || showDashOnboarding) {
@@ -101,11 +106,18 @@ fun App(
                 bikeName = profile.displayName,
                 onChangeBike = { showSettings = false; changingBike = true; selectedBikeId = null },
                 update = update,
+                onShareLogs = onShareLogs,
+                wifiSupported = wifiLink != null && profile.requiresUsb,
+                wifiEnabled = wifiEnabled,
+                wifiStatus = wifiStatus,
+                onWifiEnabled = { wifiLink?.setEnabled(it) },
+                onWifiScan = { wifiLink?.scan() },
                 onBack = { showSettings = false },
             )
         } else {
             HomeScreen(
                 state = state,
+                bikeName = if (wifiEnabled && profile.requiresUsb) "${profile.displayName} · via Wi-Fi" else profile.displayName,
                 update = update,
                 onOpenSettings = { showSettings = true },
                 onStart = { controller.start(MirrorSettings(quality, maxFps, dashResolution)) },

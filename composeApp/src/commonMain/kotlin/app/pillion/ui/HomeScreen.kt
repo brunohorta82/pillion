@@ -44,6 +44,7 @@ import app.pillion.core.UpdateInfo
 @Composable
 internal fun HomeScreen(
     state: MirrorState,
+    bikeName: String,
     update: UpdateInfo?,
     onOpenSettings: () -> Unit,
     onStart: () -> Unit,
@@ -60,7 +61,7 @@ internal fun HomeScreen(
             Spacer(Modifier.height(12.dp))
         }
         Box(Modifier.fillMaxWidth()) {
-            Box(Modifier.align(Alignment.TopCenter)) { Wordmark() }
+            Box(Modifier.align(Alignment.TopCenter)) { Wordmark(bikeName) }
             IconButton(onClick = onOpenSettings, modifier = Modifier.align(Alignment.TopEnd)) {
                 Icon(
                     Icons.Filled.Settings,
@@ -116,7 +117,7 @@ private fun UpdateReminder(version: String, onClick: () -> Unit) {
 }
 
 @Composable
-private fun Wordmark() {
+private fun Wordmark(bikeName: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             "Pillion",
@@ -128,6 +129,13 @@ private fun Wordmark() {
             "your screen, on the bike dash",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        // Shown so a screenshot/video tells which head-unit path (Bluetooth vs USB) is active.
+        Text(
+            bikeName,
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.primary,
         )
     }
 }
